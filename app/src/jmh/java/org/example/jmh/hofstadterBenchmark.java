@@ -12,12 +12,22 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Benchmark)
 @Fork(value = 1, warmups = 2)
 @Warmup(iterations = 2)
-public class SampleBenchmark {
+
+public class hofstadterBenchmark {
+  @Param({"1", "5", "10", "15", "20", "25", "30", "35"})
+  public int index;
+
   @Benchmark
   @Timeout(time = 5, timeUnit = TimeUnit.SECONDS)
-  public void sayHelloBenchmark(Blackhole bh) {
+  public void naiveBenchmark(Blackhole bh) {
       Hofstadter hofstadter = new Hofstadter();
-      String output = hofstadter.gSequence(1);
-      bh.consume(output);
+      bh.consume(hofstadter.naivegSequence(index));
+  }
+
+  @Benchmark 
+  @Timeout (time = 5, timeUnit = TimeUnit.SECONDS)
+  public void memoBenchmark(Blackhole bh) {
+      Hofstadter hofstadter = new Hofstadter();
+      bh.consume(hofstadter.memogSequence(index));
   }
 }
